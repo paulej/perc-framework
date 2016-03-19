@@ -185,7 +185,7 @@ If there is a need to encrypt one or more RTP header extensions, an encryption k
 
 RTCP is optionally encrypted and mandatorily authenticated hop-by-hop using the encryption and authentication keys derived from the SRTP master key for the hop.  This gives the switching MDD the flexibility of either forwarding RTCP packets unchanged, transmit compound RTCP packets, or to create RTCP packets to report statistics or convey other information.
 
-One of the reasons for performing hop-by-hop authentication is to provide replay protection (see [@attacks]).  If a media packet is replayed to the switching MDD, it will be detected and rejected.  Likewise, the endpoint can detect replayed packets originally sent by the MDD.  Packets received by an endpoint that were originally sent to a different endpoint will fail to pass authentication checks.
+One of the reasons for performing hop-by-hop authentication is to provide replay protection (see (#attacks)).  If a media packet is replayed to the switching MDD, it will be detected and rejected.  Likewise, the endpoint can detect replayed packets originally sent by the MDD.  Packets received by an endpoint that were originally sent to a different endpoint will fail to pass authentication checks.
 
 # SRTP Cryptographic Context
 
