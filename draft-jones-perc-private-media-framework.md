@@ -79,7 +79,7 @@ Endpoint:  An RTP flow terminating entity that also terminates the end-to-end (E
 
 MDD:  Media Distribution Device - An RTP middlebox that is not allowed to be part of end-to-end media security.  It may operate according to any of the RTP topologies [@I-D.ietf-avtcore-rtp-topologies-update] per the constraints defined by the PERC system, which includes, but not limited to, having no access to RTP media and having limits on what RTP header fields can be altered. 
 
-KMF:  An entity that is a logical function passes end-to-end key material to endpoints.  The KMF might be co-resident with another entity trusted with E2E key material.
+KMF:  Key Management Function - An entity that is a logical function passes end-to-end key material to endpoints.  The KMF might be co-resident with another entity trusted with E2E key material.
 
 Conference: Any session with two or more participants, via trusted endpoints, exchanging RTP flows through one or more MDDs.
 
