@@ -197,11 +197,13 @@ For hop-by-hop encryption, the existing parameters in the SRTP cryptographic con
 
 # Key Exchange
 
-Within this framework, there are various keys each endpoint needs: those for end-to-end encryption/authentication and those for hop-by-hop authentication, optional encryption of RTP header extensions, SRTCP authentication, and optional SRTCP encryption.  Likewise, the MDD needs a hop-by-hop key for authenticated encryption between it and endpoints and for cascaded communications to another MDD, etc
+Within this framework, there are various keys each endpoint needs: those for end-to-end encryption/authentication and those for hop-by-hop authentication, optional encryption of RTP header extensions, SRTCP authentication, and optional SRTCP encryption.  Likewise, the MDD needs a hop-by-hop key for authenticated encryption between it and endpoints and for cascaded SRTP connections to another MDD, etc
 
-To facilitate key exchange required to fullfill all of the above, this framework utilizes a DTLS-SRTP session between endpoints and the KMF via a DTLS tunnel between it and an MDD [add reference to tunnel I-D] and via procedures defined in PERC EKT [add reference to EKT diet I-D].  
+To facilitate key exchange required to fullfill all of the above, this framework utilizes a DTLS-SRTP session between endpoints and the KMF via a DTLS tunnel between it and an MDD as defined in DTLS Tunnel for PERC [@!I-D.jones-perc-dtls-tunnel] and via procedures defined in PERC EKT [add reference to EKT diet I-D].  
 
-## Negotiating SRTP Protection Profiles and Key Exchange
+## Initial Key Exchange and KMF
+
+The procedures defined in DTLS Tunnel for PERC [@!I-D.jones-perc-dtls-tunnel] establish one or more DTLS tunnels between the MDD and KMF, making it is possible for the MDD to facilitate the establishment of a secure DTLS association between each endpoint and the KMF as shown the following figure.  The DTLS association between endpoints and the KMF will enable each endpoint to receive E2E Key Encryption Key (KEK) information and HBH key information.  At the same time, the KMF can securely provide only the HBH key information to the MDD.  The key information summarized here may include the master key and salt as well as the negotiated cryptographic transform.
 
 ```
          E2E KEK info +---------+ HBH Key info   
@@ -217,17 +219,31 @@ To facilitate key exchange required to fullfill all of the above, this framework
 +-----------+         +---------+         +-----------+
 
 ```
-Figure: Key Management Function and Negotiating Key Information
+Figure: Exchanging Key Information Between Entities
 
-### Endpoint and KMF
+Endpoints will establish DTLS-SRTP associations over the RTP session’s media ports for the purposes of key information exchange with the KMF.  The MDD will not terminate the DTLS signaling and instead forward DTLS packets received from endpoints and forward those to the KMF and vice versa via a tunnel established between MDD and the KMF.  This tunnel used to encapsulate the DTLS-SRTP signaling will also be used to convey HBH key information from the KMF to the MDD, so no additional protocol or interface is required.
 
-### MDD and KMF
+Following the key information exchange with the KMF, endpoints will be able to encrypt media end-to-end with their E2E Key(i), sending that E2E Key(i) to other endpoints encrypted with E2E KEK as well as encrypt and authenticate entire packets using local HBH Key(j).  The procedures defined do not allow the MDD to gain access to E2E KEK information, preventing it from gaining access to any endpoint’s E2E Key and decrypting any media in the conference.
 
-
-
-## Session Signaling
+## Key Exchange during Conference
 
 
+
+
+# Entity Trust
+
+It is important to this solution framework that the entities can full trust and validate the authenticity of other entities, especially the KMF and Endpoints.  This may be satisfied via identity assertions from a trusted provider or via device certificates manually exchanged outside this frameowrk or via device certificate fingerprint information conveyed during session signaling.  [EDIT TO DO:  Cullen, others, perhaps you can add a small amount of elaboration here.]
+
+## Identity Assertions
+[EDIT TO DO:  Cullen, others, perhaps you can add a small amount of elaboration here.]
+
+## Certificate Fingerprints in Session Signaling
+
+Entities managing session signaling are generally assumed to be untrusted in the PERC framework.  However, there are some deployment scenarios where session signaling may be assumed trustworthy for the purposes of exchanging, in a manner that can be authenticated, the fingerprint of an entity’s certificate.  
+
+As a concrete example, SIP [@RFC3261] and SDP [@!RFC4566] can be used to convey the fingerprint information per [@!RFC5763].  An endpoint’s SIP User Agent would send an INVITE message containing SDP for the media session along with the endpoint's certificate fingerprint, which **MUST** be cryptographically signed so as to prevent unauthorized modification of the fingerprint value.  For example, the endpoint can send a message to a call processing function (e.g., B2BUA) over a TLS connection.  And the B2BUA might sign the message using the procedures described in [@RFC4474] for the benefit of forwarding the message to other entities.  
+
+Ultimately, if using session signaling, an endpoint's certificate fingerprint would need to be securely convey to the KMF and visa versa, as it will be necessary that KMF's certificate fingerprint be conveyed to endpoints in a manner that can be authenticated.
 
 # Attacks on Privacy Enhanced RTP Conferencing {#attacks}
 
