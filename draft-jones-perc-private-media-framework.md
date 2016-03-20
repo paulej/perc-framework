@@ -182,7 +182,7 @@ To enable the above, this framework defines the use of two security contexts and
 ```
 Figure: E2E and HBH Keys Used for Authenticated Encryption
   
-The PERC Double draft specification TODO FIX REF \[@!draft-jennings-perc-double] uses standard SRTP key material and recommended cryptographic transform(s) to first form the inner, end-to-end RTP security association.  That end-to-end RTP security association may be optionally used to encrypt some RTP header extensions along with RTP media content.  The output of this is treated like an RTP packet and encrypted again, with (optionally) standard SRTP key material and recommended cryptographic transform(s), to form the outer hop-by-hop security associations.  The endpoint executes the entire Double operation while the MDD just performs the outer, hop-by-hop security association operation. 
+The PERC Double draft specification [@!I-D.jennings-perc-double] uses standard SRTP key material and recommended cryptographic transform(s) to first form the inner, end-to-end RTP security association.  That end-to-end RTP security association may be optionally used to encrypt some RTP header extensions along with RTP media content.  The output of this is treated like an RTP packet and encrypted again, with (optionally) standard SRTP key material and recommended cryptographic transform(s), to form the outer hop-by-hop security associations.  The endpoint executes the entire Double operation while the MDD just performs the outer, hop-by-hop security association operation. 
 
 RTCP is only (optionally) encrypted hop-by-hop, not end-to-end, so standard SRTCP Authenticated Encryption operations [@!RFC3711] are used hop-by-hop.
 
@@ -190,7 +190,7 @@ This framework does add an identifier to the set of parameters associated with t
 
 ## E2E Key Confidentiality
 
-To ensure the confidentiality of E2E Keys shared between endpoints, endpoints will make use of common Key Encryption Key (KEK) that is known only by all of the trusted entities in a conference.  That KEK, defined in the PERC EKT Diet Draft TODO FIX REF \[@! I-D.draft-jennings-perc-srtp-ekt-diet] as the EKT_key, will be used to subsequently encrypt E2E key material and security context information (E2E Key(i)) that each endpoint will be using to encrypt their media (i.e., RTP payload) via authenticated SRTP encryption as defined in the PERC Double draft specification TODO FIX REF \[@!draft-jennings-perc-double].
+To ensure the confidentiality of E2E Keys shared between endpoints, endpoints will make use of common Key Encryption Key (KEK) that is known only by all of the trusted entities in a conference.  That KEK, defined in the PERC EKT Diet Draft TODO FIX REF \[@! I-D.draft-jennings-perc-srtp-ekt-diet] as the EKT_key, will be used to subsequently encrypt E2E key material and security context information (E2E Key(i)) that each endpoint will be using to encrypt their media (i.e., RTP payload) via authenticated SRTP encryption as defined in the PERC Double draft specification TODO FIX REF [@!I-D.jennings-perc-double].
 
 This KEK may need to change from time-to-time during the life of a conference, such as when a new participant joins or leaves a conference.  Dictating if, when or how often a conference is to be re-keyed is outside the scope of this document, but this framework does accomodate re-keying during the life of a conference.
 
