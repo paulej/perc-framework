@@ -115,8 +115,8 @@ Each of the elements discussed below has a direct or indirect relationship with 
 |    Function    |     |       |       Device       |
 +----------------+     |       +--------------------+
                        |
-     Trusted           |            Untrusted
-     Elements          |            Elements
+     Trusted           |         Untrusted w/ Media
+     Elements          |              Elements
                        |
                        |
 ```
@@ -197,47 +197,37 @@ For hop-by-hop encryption, the existing parameters in the SRTP cryptographic con
 
 # Key Exchange
 
-Within this framework, there are various keys each endpoint needs: those for end-to-end encryption/authentication and those for hop-by-hop authentication, optional encryption of RTP header extensions, SRTCP authentication, and optional SRTCP encryption.  Likewise, the MDD needs a hop-by-hop key when communicating with an endpoint or cascaded conference server.  The challenge is in securely exchanging these keys between the appropriate entities.
+Within this framework, there are various keys each endpoint needs: those for end-to-end encryption/authentication and those for hop-by-hop authentication, optional encryption of RTP header extensions, SRTCP authentication, and optional SRTCP encryption.  Likewise, the MDD needs a hop-by-hop key for authenticated encryption between it and endpoints and for cascaded communications to another MDD, etc
 
-To facilitate key exchange, this framework utilizes DTLS-SRTP and procedures defined in PERC EKT.  This is explained further in the following sub-sections.
-
-## Session Signaling
-
-From a PERC system perspective, the session signaling protocol is not assumed to be trusted.  Signaling might be via SIP [@RFC3261] or signaling mechanism between a browser and a server, for example.  The PERC system over requires that the session signaling convey, in some manner that can be authenticated, the fingerprint of the endpoint's certificate that will be used with DTLS-SRTP.  For the sake of providing a concrete example, SIP and SDP [@!RFC4566] will be used to convey the fingerprint information per [@!RFC5763].
-
-The endpoint ("User Agent" in SIP terminology) will send an INVITE message containing SDP for the media session along with the endpoint's certificate fingerprint.  This message or part thereof **MUST** be cryptographically signed so as to prevent unauthorized, undetectable modification of the fingerprint value, or the message **MUST** be sent to a trusted element over a secure connection. For this example, it is assumed that the endpoint sends a message to a call processing function (e.g., a B2BUA) over a TLS connection.  The B2BUA might sign the message using the procedures described in [@RFC4474] for the benefit of forwarding the message to other entities.  
-
-Ultimately, a session is established to a conference, resources assigned and the subsequently endpoint receives IP address information to which establish one or more RTP sessions through to a MDD.   
-
-The Key Management Function (KMF) may need conference-to-endpoint correlation information that may be satisfied by getting info directly from the endpoints, or some trusted entity on their behalf, via the MDD or some other means.  Regardless of the exact method used to receive that information, it is important that the endpoint's certificate fingerprint is securely conveyed to the KMF.  
-
-If it also neccessary that KMF's certificate fingerprint information be conveyed to endpoints via session signaling, the endpoint **MUST** be able to fully trust the validity of that fingerprint
+To facilitate key exchange required to fullfill all of the above, this framework utilizes a DTLS-SRTP session between endpoints and the KMF via a DTLS tunnel between it and an MDD [add reference to tunnel I-D] and via procedures defined in PERC EKT [add reference to EKT diet I-D].  
 
 ## Negotiating SRTP Protection Profiles and Key Exchange
 
+```
+         E2E KEK info +---------+ HBH Key info   
+         to endponts  |   KMF   | to endpoints & MDD
+                      +---------+  
+                        | ^ ^ | 
+                        | | | |-DTLS Tunnel    
+                        | | | |
++-----------+         +---------+         +-----------+
+| Endpoint  |  DTLS   |   MDD   |  DTLS   | Endpoint  |
+|  E2E KEK  |<--------|         |-------->|  E2E KEK  |
+| HBH Key(j)| to KMF  | HBH Keys| to KMF  | HBH Key(j)|
++-----------+         +---------+         +-----------+
+
+```
+Figure: Key Management Function and Negotiating Key Information
+
 ### Endpoint and KMF
-
-There is a need for an SRTP master key and STRP master salt for hop- by-hop authentication and optional encryption known to the endpoint and the MDD.  Additionally, there is a need to exchange end-to-end encryption material for the media content that is known to all participants in the conference, but not known to the switching MDD.
-
-To convey keys, the endpoint will use the procedures defined in [reference new EKT draft?] for DTLS-SRTP over the media ports for the RTP session.  However, the switching MDD does not terminate the DTLS signaling.  Rather, DTLS packets received by the switching MDD are forwarded to the KMF and vice versa.  The DTLS tunneling protocol that exists between the MDD and KMF is defined in [I-D.jones-perc-dtls-tunnel].
-
-The KMF is described as a logical function that may be co-resident with, or interface with, a Key Management Server (KMS), such as the one described in [@I-D.abiggs-saag-key-management-service].
-
-Following the key exchange, the endpoint will be able to encrypt media end-to-end and authenticate packets hop-by-hop.  Likewise, the conference server will be able to authenticate the received packet at the hop, but will have no visibility into the encrypted media content.
 
 ### MDD and KMF
 
-The DTLS tunnel between the MDD and the KMF used to encapsulate the DTLS-SRTP signaling will also be used to convey the hop-by-hop encryption keys, salt, and protection profile information.  In this way, no additional messages or interfaces are required in order for the switching MDD to receive the required security parameters.
 
-# Switching Active Speakers and the E2E Key Material  
 
-To ensure a speedy decoder synchronization in receivers when transitioning from forwarding one active speaker's media to the next, a switching MDD will send a request for Full Intra-frame Request (FIR) [@!RFC5104] (also known as a "video fast update" in [@H.323] systems) when a decision is made to switch active video flows.  When the endpoint receives this request, it would transmit the video frame as requested and include with that initial packet the current "Full EKT Field" so that recipients will be able to decrypt the media flow.  Additionally, a "Full EKT Field" **SHOULD** be transmitted about every 100ms to ensure that conference participants can decrypt the media transmitted.
+## Session Signaling
 
-It is not possible to request a "Full EKT Field" for audio flows.  For this reason, it is **RECOMMENDED** that a "Full EKT Field" be included in audio packets about every 100ms to smooth the transition of the active speaker's audio forwarded by the server.
 
-Endpoints **SHOULD NOT** include the "Full EKT Field" more frequently than specified herein, rather opting for the "Short EKT Field" when sending most packets to reduce the bandwidth consumed on the wire.
-
-Endpoints **MUST** implement [@!RFC6464] in order for an MDD to determine which endpoint(s) have an active speaker as no other method requiring access to decrypted media can be used by an untrusted MDD.
 
 # Attacks on Privacy Enhanced RTP Conferencing {#attacks}
 
