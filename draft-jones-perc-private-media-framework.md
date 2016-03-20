@@ -73,37 +73,28 @@ A goal of this framework is to define a framework for enhanced privacy in RTP-ba
 
 The key words "**MUST**", "**MUST NOT**", "**REQUIRED**", "**SHALL**", "**SHALL NOT**", "**SHOULD**", "**SHOULD NOT**", "**RECOMMENDED**", "**MAY**", and "**OPTIONAL**" in this document are to be interpreted as described in [@!RFC2119] when they appear in ALL CAPS.  These words may also appear in this document in lower case as plain English words, absent their normative meanings.
 
-This solution framework uses the following terms:
+This solution framework uses the following terms or conventions:
 
-Endpoint:  An RTP terminating entity that terminates the end-to-end (E2E) security context.  This may include user endpoints, gateways, MCUs and more that are considered a PERC Trusted Element in any given deployment.
+Endpoint:  An RTP flow terminating entity that also terminates the end-to-end (E2E) security context.  This may include user endpoints, gateways, MCUs and more that are in a trusted domain for given deployment.
 
-MDD:  Media Distribution Device - An RTP middlebox that is not allowed to be part of end-to-end security context.  It may operate according to any of the RTP topologies (NOTE: add reference I-D.ietf-avtcore-rtp-topologies-update) per the constraints defined by the PERC system, which includes, but not limited to, having no access to RTP media and have limits on what RTP header fields can be altered.
+MDD:  Media Distribution Device - An RTP middlebox that is not allowed to be part of end-to-end media security.  It may operate according to any of the RTP topologies [@I-D.ietf-avtcore-rtp-topologies-update] per the constraints defined by the PERC system, which includes, but not limited to, having no access to RTP media and having limits on what RTP header fields can be altered. 
 
 KMF:  An entity that is a logical function passes end-to-end key material to endpoints.  The KMF might be co-resident with another entity trusted with E2E key material.
 
-PERC Trusted Elements:  Endpoint and KMF  (NOTE: elaborate more)
+Conference: Any session with two or more participants, via trusted endpoints, exchanging RTP flows through one or more MDDs.
 
-PERC Untrusted Elements:   MDD, Call Processing, Third Parties (NOTE: elaborate more)
-
-Third Party:  Any entity that is not an Endpoint, MDD, KMF or Call Processing entity (NOTE: elaborate more)
+Third Party:  Any entity that is not an Endpoint, MDD, KMF or Call Processing entity (EDITOR NOTE: elaborate more)
 
 
-# PERC Trust Model
+# PERC Entities and Trust Model
 
-The architectural model described in this framework document enables MDDs to be hosted in domains, such as in a cloud conferencing provider facility, where the trustworthiness is below the level needed to have the privacy of conference's media transmitted compromised.  The MDDs and supporting infrastructure in such a domain are still trusted with reliably connecting the participants together in a conference, but not trusted with key material needed to decrypyt any of the participant's media.  This has the benefit of protecting the confidentiality of participant's media in the case of attacks on those MDD, for example.
+The following diagram depicts the trust relationships, direct or indirect, between entities described in the subsequent sub-sections.  Note that this these entities may be co-located or further divided into multiple, separate physical devices.   
 
-From the PERC model system perspective, entities in lower trustworthiness domains will simply be referred to as Unstrusted from this point forward.  This does not mean that they are completely untrusted; it only means that they are not trusted with media decryption. 
-
-From the PERC model system perspective, entities considered trusted (Refer to (#fig-trustmodel)) can be in possession of the E2E media encryption key(s) for a past, current, or potentially future conference (or portion thereof) used to protect media content. In the general case, only the endpoint and an associated key management function needs to be trusted.  
-
-Please note that some elements classified as untrusted in the simple, example case used in this document may be considered trusted in some deployments.  One example might be a gateway, traditional media server or other MDD in a trusted environment connecting endpoints via cascade link in to a private media conference.  This document does not preclude such deployment combinations, but will keep the definitions and examples focused by only using the the simple, general case.
-
-Each of the elements discussed below has a direct or indirect relationship with each other.  The following diagram depicts the trust relationships described in the following sub-sections and the media or signaling interfaces that exist between them, showing the trusted elements on the left and untrusted elements on the right.  Note that this is a functional diagram and elements may be co-located or further divided into multiple separate physical entities.  Further, it is not necessary that every interface exist between all elements, such as both an interface from the endpoint and call processing function to a key management function, though both are possible options.
+Please note that some entities classified as untrusted in the simple, general deployment scenario used most commonly in this document may be considered trusted in other deployments.  This document does not preclude such scenarios, but will keep the definitions and examples focused by only using the the simple, most general deployment case.
 
 {#fig-trustmodel align="center"}
 ```
 
-                       |
                        |
    +----------+        |       +-----------------+
    | Endpoint |        |       | Call Processing |
@@ -116,39 +107,54 @@ Each of the elements discussed below has a direct or indirect relationship with 
 +----------------+     |       +--------------------+
                        |
      Trusted           |         Untrusted w/ Media
-     Elements          |              Elements
+     Entities          |             Entities
                        |
-                       |
+
 ```
-Figure: Relationship of Trusted and Untrusted Elements
+Figure: Trusted and Untrusted Entities in PERC
 
-## Trusted Elements
 
-The endpoint is considered a trusted element, as it will be sourcing media flows transmitted to other endpoints and will be receiving media for rendering.  While it is possible for an endpoint to be compromised and perform in unexpected ways, such as transmitting a decrypted copy of media content to an adversary, such security issues and defenses are outside the scope of this document.
+## Untrusted Entities
 
-The other trusted element is a key management function (KMF), which may be integrated with the endpoints or exist standalone.  This function is responsible for providing cryptographic keys to the endpoints for encrypting and authenticating media content.  The KMF is also responsible for providing cryptographic keys to the conferencing resources, such as the MDD, to enable authentication of media packets received by an endpoint.  Interaction between the KMF and untrusted call processing functions may be necessary to ensure endpoints are delivered the appropriate keys.  The KMF needs to be tightly controlled and managed to prevent exploitation by an adversary, as any kind of security compromise of the KMF puts the security of the conference at risk.
+The architecture described in this framework document enables conferencing infrastructure to be hosted in domains, such as in a cloud conferencing provider's facilities, where the trustworthiness is below the level needed to assume the privacy of participant's media will not be compromised.  The conferencing infrastructure in such a domain is still trusted with reliably connecting the participants together in a conference, but not trusted with key material needed to decrypyt any of the participant's media.  Entities in such lower trustworthiness domains will simply be referred to as Unstrusted from this point forward.  This does not mean that they are completely untrusted with non-media related aspects of hosting a conference. 
 
-## Untrusted Elements
+### MDD 
 
-The call processing function is responsible for such things as authenticating the user or endpoint for the purpose of joining a conference, signing messages, and processing call signaling messages.  This element is responsible for ensuring the integrity, and optionally the confidentiality, of call signaling messages between itself, the endpoint, and other network elements.  However, it is considered an untrusted element for the purposes of this document, as it cannot be trusted to have access to or be able to gain access to cryptographic key material that provides privacy and integrity of media packets.
+An MDD forwards RTP flows between endpoints in the conference while performing per-hop authentication of each RTP packet.  The MDD may need access to one or more RTP headers or header extensions, potentially adding or modifying a certain subset.  The MDD will also relay secured messaging between the endpoints and the key management function and will acquire per-hop key information from the KMF.  The actual media content **MUST NOT** not be decryptable by an MDD, so it is untrusted to have access to the E2E media encryption keys, which this framework's key exchange mechanisms will prevent.  
 
-There might be several independent call processing functions within an enterprise, service provider network, or the Internet that are classified as untrusted.  Any signaling information that passes through these untrusted entities is subject to inspection by that element and might be altered by an adversary.
+An endpoint's ability to join a conference hosted by an MDD **MUST NOT** alone be interpreted as being authorized to have access to the E2E media encryption keys as the MDD does not have the ability to determine whether an endpoint is authorized.
 
-Likewise, there may be certain deployment models where the call processing function is considered trusted.  In such cases, trusted call processing functions **MUST** take responsibility for ensuring the integrity of received messages before delivering those to the endpoint.  How signaling message integrity is ensured is outside the scope of this document, but might use such methods as defined in [@RFC4474].
+An MDD **MUST** perform its role in properly forwarding media packets while taking measures to mitigate the adverse effects of denial of service attacks (Refer to (#attacks)), etc, to a level equal to or better than pre-PERC deployments.
 
-The final element is the switching MDD, which is responsible for forwarding encrypted media packets and conference control information to endpoints in the conference.  It is also responsible for conveying secured signaling between the endpoints and the key management function, acquiring per-hop authentication keys from the KMF, and performing per-hop authentication operations for media packets.  This function might also aggregate conference control information and initiate various conference control requests.  Forwarding of media packets requires that the switching MDD have access to RTP headers or header extensions and potentially modify those message elements, but the actual media content **MUST** not be decipherable by the switching MDD.
+An MDD or associated conferencing infrastructure may also initiate or terminate various conference control related messaging, which is outside the scope of this framework dosument.  
 
-Further, the switching MDD does not have the ability to determine whether an endpoint is authorized to have access to media encryption keys.  Merely joining a conference **MUST NOT** be interpreted as having authority.  Media encryption keys are conveyed to the endpoint by the KMF in such a way as to prevent the switching MDD from having access to those keys.
+### Call Processing 
 
-It is assumed that an adversary might have access to the switching MDD and have the ability to read any of the contents that pass through.  For this reason, it is untrusted to have access to the media encryption keys.
+The call processing function is untrusted in the simple, general deployment scenario.  It cannot be trusted to have access to E2E key information and a physical subset of the call processing function may reside in facilities outside the trusted domain.
 
-As with the call processing functions, it is appreciated that there may be some deployments wherein the switching MDD is trusted.  However, for the purposes of this document, the switching MDD is considered untrusted so that we can be ensure to develop a solution that will work even in the most hostile environments.
+The call processing function may include the processing of call signaling messages and the signing of those messages, and may authenticate the endpoints for the purpose of starting the call signaling and subsequent joining of a conference hosted through one or more MDDs.  Call processing may optionally ensure the confidentiality call signaling messages between itself, the endpoint, and other entities.  
 
-It is expected that an MDD performs its role in properly forwarding media packets, taking measures to safeguard against replay attacks, etc.  If a MDD is exploited, an adversary may do such things as discard packets, replay packets, or introduce unacceptable delay in packet delivery.
+In any deployment scenario where the entire call processing function is considered trusted, the call processing function **MUST** ensure the integrity of received messages before forwarding to other entities.  
+
+## Trusted Entities
+
+From the PERC model system perspective, entities considered trusted (Refer to (#fig-trustmodel)) can be in possession of the E2E media encryption key(s) for a past, current, or potentially future conferences.   
+
+### Endpoint
+
+An endpoint is considered trusted and will have access to E2E key information.  While it is possible for an endpoint to be tampered with and become compromised, subsequently performing in undesired ways, defining endpoint resistence to compromise is outside the scope of this document.  Endpoints will take measures to mitigate the adverse effects of denial of service attacks from other entities (Refer to (#attacks)), etc, to a level equal to or better than pre-PERC deployments.
+
+### KMF
+
+The KMF, which may be colocated with an endpoint or exist standalone, is responsible for providing key information to endpoints for both end-to-end and hop-by-hop security contexts and for providing key information for the hop-by-hop security contexts to MDDs.  
+
+Interaction between the KMF and the call processing function may be necessary to for proper conference-to-endpoint correlations, which may or may not be satisfied by getting info directly from the endpoints or via some other means. TODO: Need to revisit this design choice in the context of all the alternatives.
+
+Obviously, the KMF needs to be closely  managed to prevent exploitation by an adversary, as any kind of security compromise of the KMF puts the security of the conference at risk.
 
 # Framework for PERC 
 
-The purpose for this framework is to define a means through which media privacy can be ensured when communicating within a conferencing environment consisting of one or more centrally located media distribution devices (MDD) that only switch, hence not terminate, media.  This framework specifies the reuse of several technologies, including SRTP [@!RFC3711], EKT [@!I-D.ietf-avtcore-srtp-ekt], and DTLS-SRTP [@!RFC5764].  For the purposes of this document, a conference refers to any session with two or more participants, attached via trusted devices, exchanging RTP flows through one or more MDDs.
+The purpose for this framework is to define a means through which media privacy can be ensured when communicating within a conferencing environment consisting of one or more centrally located media distribution devices (MDD) that only switch, hence not terminate, media.  This framework specifies the reuse of several technologies, including SRTP [@!RFC3711], EKT [@!I-D.ietf-avtcore-srtp-ekt], and DTLS-SRTP [@!RFC5764].  
 
 
 
@@ -205,7 +211,9 @@ To facilitate key exchange required to fullfill all of the above, this framework
 
 The procedures defined in DTLS Tunnel for PERC [@!I-D.jones-perc-dtls-tunnel] establish one or more DTLS tunnels between the MDD and KMF, making it is possible for the MDD to facilitate the establishment of a secure DTLS association between each endpoint and the KMF as shown the following figure.  The DTLS association between endpoints and the KMF will enable each endpoint to receive E2E Key Encryption Key (KEK) information and HBH key information.  At the same time, the KMF can securely provide only the HBH key information to the MDD.  The key information summarized here may include the master key and salt as well as the negotiated cryptographic transform.
 
+{#fig-initialkeyexchange align="center"}
 ```
+
          E2E KEK info +---------+ HBH Key info   
          to endponts  |   KMF   | to endpoints & MDD
                       +---------+  
