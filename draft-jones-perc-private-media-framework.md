@@ -168,7 +168,7 @@ This solution framework focuses on the end-to-end privacy and integrity of the p
 
 This solution framework also allows the MDD to access RTP headers and all or most header extensions, as well modifying a certain subset of the headers and the ability to add some header extensions.  MDD is responsible for authenticating the integrity all RTP packets sent to it and enable endpoints to authenticate the RTP packets received.
 
-Thus, there is a need for two security contexts and two associated encryption keys; an “inner” key (E2E Key(i); i={a given endpoint}) for authenticated encryption of RTP media between endpoints and an “outer” key (HBH Key(j); j=(a given hop)) for the hop between an endpoint and an MDD or between MDDs.  Reference the following figure.
+To enable the above, this framework defines the use of two security contexts and two associated encryption keys; an “inner” key (E2E Key(i); i={a given endpoint}) for authenticated encryption of RTP media between endpoints and an “outer” key (HBH Key(j); j=(a given hop)) for the hop between an endpoint and an MDD or between MDDs.  Reference the following figure.
 
 ```
 
@@ -182,23 +182,35 @@ Thus, there is a need for two security contexts and two associated encryption ke
 ```
 Figure: E2E and HBH Keys Used for Authenticated Encrytion
   
-The PERC Double draft specification [@! draft-jennings-perc-double] uses standard SRTP key material and recommended cryptographic transform(s) to first form the inner, end-to-end RTP security association.  That end-to-end RTP security association may be optionally used to encrypt some RTP header extensions along with RTP media content.  The output of this is treated like an RTP packet and encrypted again, (optionally) with standard SRTP key material and recommended cryptographic transform(s), to form the outer hop-by-hop security associations. 
+The PERC Double draft specification [@! draft-jennings-perc-double] uses standard SRTP key material and recommended cryptographic transform(s) to first form the inner, end-to-end RTP security association.  That end-to-end RTP security association may be optionally used to encrypt some RTP header extensions along with RTP media content.  The output of this is treated like an RTP packet and encrypted again, with (optionally) standard SRTP key material and recommended cryptographic transform(s), to form the outer hop-by-hop security associations.  The endpoint excutes the entire Double operation while the MDD just performs the outer, hop-by-hop security association operation.  
 
-##
+RTCP is only (optionally) encrypted hop-by-hop, not end-to-end, so standard SRTCP Authenticated Encryption operations [@!RFC3711] are used hop-by-hop.
 
+This framework does add an identifier to the set of parameters associated with the E2E encryption operation. That identifier has an associated Key Encryption Key (KEK), which is described below, as well as SRTP key material and related information. [EDIT TO DO as not sure this is still true or accurately described given other changes!]
 
+## E2E Key Confidentiality
 
+To ensure the confidentiality of E2E Keys shared between endpoints, endpoints will make use of common Key Encryption Key (KEK) that is known only by all of the trusted entities in a conference.  That KEK, defined in the PERC EKT Diet Draft [@! I-D.draft-jennings-perc-srtp-ekt-diet] as the EKT_key, will be used to subsequently encrypt E2E key material and security context information (E2E Key(i)) that each endpoint will be using to encrypt their media (i.e., RTP payload) via authenticated SRTP encryption as defined in the PERC Double draft specification [@! draft-jennings-perc-double].
 
+This KEK may need to change from time-to-time during the life of a conference, such as when a new participant joins or leaves a conference.  Dictating if, when or how often a conference is to be re-keyed is outside the scope of this document, but this framework does accomodate re-keying during the life of a conference.
 
-## SRTP Cryptographic Context
+(EDITOR TO DO:  May add a table here summarizing which entity has what keys.)
 
-For any given media source identified by its SSRC, there is a single SRTP cryptographic context as described in Section 3.2 of [@!RFC3711] used in this framework.
+## E2E Keys and Endpoint Operations
 
-For end-to-end encryption, this framework extends the parameter set of the cryptographic context by adding an identifier for the end-to-end authenticated encryption algorithm.  That parameter has associated with it an EKT key (and associated EKT information, such as master salt, key length, etc.), one or more SRTP master keys, and as outlined in Section 3.2.1 of [@!RFC3711], other associated values that relate to the master keys (e.g., master salt and key length values).
+Any given RTP media flow can be identified by its SSRC, and endpoints may send more than one at a time and may change the mix of media flows transmitted through the different flows during the life of a conference
 
-For hop-by-hop encryption, the existing parameters in the SRTP cryptographic context are used, including for the optional encryption of RTP header extensions, authentication tag generation, etc.
+Thus, Endpoints **MUST** maintain a list of SSRCs from received RTP flows and each SSRC's associated E2E Key(i) information.  Following a change of the KEK (i.e., EKT_key), prior E2E Key(i) information **SHOULD** be retained just long enough to ensure that late-arriving or out-of-order packets can be successfully played. [EDITOR NOTE: Perhaps a seperate best practices document can recommend durations after some real world testing.]  The E2E Key(i) information **SHOULD** be discarded upon the endpoint itself leaving the conference. 
 
-# Key Exchange
+## HBH Keys and Hop Operations
+
+To ensure the integrity of transmitted media packets, this framework requires that every packet be authenticated hop-by-hop (HBH), between an endpoint and an MDD and between MDDs.  The authentication key used for hop-by-hop authentication is derived from an SRTP master key shared only on the respective hop (HBH Key(j); j=(a given hop)). Each HBH Key(j) is distinct per hop and no two hops ever intentionally use the same SRTP master key.
+
+Using hop-by-hop authentication gives the MDD the ability to change certain RTP header values. Which values the MDD may change in the RTP header are defined in [@!I-D.jennings-perc-double].  RTCP is always authenticated and optionally encrypted hop-by-hop using SRTP master key for the hop. This gives the MDD the flexibility of either forwarding RTCP unchanged, transmit compound RTCP packets, or to iniate RTCP packets for reporting statistics or for conveying other information.  Performing hop-by-hop authentication for all RTP and RTCP packets also helps provide replay protection (see (#attacks)). 
+
+If there is a need to encrypt one or more RTP header extensions hop-by-hop, an encryption key is derived from the hop-by-hop SRTP master key to encrypt header extensions as per [@!RFC6904]. This will still give the switching MDD visibility into header extensions, such as the one used to determine audio level [@!RFC6464] of conference participants. Note that when RTP header extensions tare encrypted, all hops - in the untrusted domain at least - will need to decrypt and re-encrypt these encrypted header extensions.
+
+## Key Exchange
 
 Within this framework, there are various keys each endpoint needs: those for end-to-end encryption/authentication and those for hop-by-hop authentication, optional encryption of RTP header extensions, SRTCP authentication, and optional SRTCP encryption.  Likewise, the MDD needs a hop-by-hop key for authenticated encryption between it and endpoints and for cascaded SRTP connections to another MDD, etc
 
