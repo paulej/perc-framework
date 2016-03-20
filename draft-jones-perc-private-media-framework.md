@@ -75,7 +75,7 @@ The key words "**MUST**", "**MUST NOT**", "**REQUIRED**", "**SHALL**", "**SHALL 
 
 This solution framework uses the following terms or conventions:
 
-Endpoint:  An RTP flow terminating entity that also terminates the end-to-end (E2E) security context.  This may include user endpoints, gateways, MCUs and more that are in a trusted domain for given deployment.
+Endpoint:  An RTP flow terminating entity that also terminates the end-to-end (E2E) security context.  This may include user endpoints, gateways, MCUs, recording device and more that are in a trusted domain for a given deployment.
 
 MDD:  Media Distribution Device - An RTP middlebox that is not allowed to be part of end-to-end media security.  It may operate according to any of the RTP topologies [@I-D.ietf-avtcore-rtp-topologies-update] per the constraints defined by the PERC system, which includes, but not limited to, having no access to RTP media and having limits on what RTP header fields can be altered. 
 
@@ -88,9 +88,9 @@ Third Party:  Any entity that is not an Endpoint, MDD, KMF or Call Processing en
 
 # PERC Entities and Trust Model
 
-The following diagram depicts the trust relationships, direct or indirect, between entities described in the subsequent sub-sections.  Note that this these entities may be co-located or further divided into multiple, separate physical devices.   
+The following diagram depicts the trust relationships, direct or indirect, between entities described in the subsequent sub-sections.  Note that these entities may be co-located or further divided into multiple, separate physical devices.   
 
-Please note that some entities classified as untrusted in the simple, general deployment scenario used most commonly in this document may be considered trusted in other deployments.  This document does not preclude such scenarios, but will keep the definitions and examples focused by only using the the simple, most general deployment case.
+Please note that some entities classified as untrusted in the simple, general deployment scenario used most commonly in this document may be considered trusted in other deployments.  This document does not preclude such scenarios, but will keep the definitions and examples focused by only using the the simple, most general deployment scenario.
 
 {#fig-trustmodel align="center"}
 ```
@@ -116,7 +116,7 @@ Figure: Trusted and Untrusted Entities in PERC
 
 ## Untrusted Entities
 
-The architecture described in this framework document enables conferencing infrastructure to be hosted in domains, such as in a cloud conferencing provider's facilities, where the trustworthiness is below the level needed to assume the privacy of participant's media will not be compromised.  The conferencing infrastructure in such a domain is still trusted with reliably connecting the participants together in a conference, but not trusted with key material needed to decrypyt any of the participant's media.  Entities in such lower trustworthiness domains will simply be referred to as Unstrusted from this point forward.  This does not mean that they are completely untrusted with non-media related aspects of hosting a conference. 
+The architecture described in this framework document enables conferencing infrastructure to be hosted in domains, such as in a cloud conferencing provider's facilities, where the trustworthiness is below the level needed to assume the privacy of participant's media will not be compromised.  The conferencing infrastructure in such a domain is still trusted with reliably connecting the participants together in a conference, but not trusted with key material needed to decrypyt any of the participant's media.  Entities in such lower trustworthiness domains will simply be referred to as Unstrusted from this point forward.  This does not mean that they are completely untrusted as they may be trusted with most non-media related aspects of hosting a conference. 
 
 ### MDD 
 
@@ -132,9 +132,9 @@ An MDD or associated conferencing infrastructure may also initiate or terminate 
 
 The call processing function is untrusted in the simple, general deployment scenario.  It cannot be trusted to have access to E2E key information and a physical subset of the call processing function may reside in facilities outside the trusted domain.
 
-The call processing function may include the processing of call signaling messages and the signing of those messages, and may authenticate the endpoints for the purpose of starting the call signaling and subsequent joining of a conference hosted through one or more MDDs.  Call processing may optionally ensure the confidentiality call signaling messages between itself, the endpoint, and other entities.  
+The call processing function may include the processing of call signaling messages as well as the signing of those messages, and may authenticate the endpoints for the purpose of starting the call signaling and subsequent joining of a conference hosted through one or more MDDs.  Call processing may optionally ensure the privacy of call signaling messages between itself, the endpoint, and other entities.  
 
-In any deployment scenario where the entire call processing function is considered trusted, the call processing function **MUST** ensure the integrity of received messages before forwarding to other entities.  
+In any deployment scenario where the call processing function is considered trusted, the call processing function **MUST** ensure the integrity of received messages before forwarding to other entities.  
 
 ## Trusted Entities
 
