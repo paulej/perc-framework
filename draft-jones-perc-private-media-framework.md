@@ -221,9 +221,9 @@ The procedures defined in DTLS Tunnel for PERC [@!I-D.jones-perc-dtls-tunnel] es
 ```
 Figure: Exchanging Key Information Between Entities
 
-Endpoints will establish DTLS-SRTP associations over the RTP session’s media ports for the purposes of key information exchange with the KMF.  The MDD will not terminate the DTLS signaling and instead forward DTLS packets received from endpoints and forward those to the KMF and vice versa via a tunnel established between MDD and the KMF.  This tunnel used to encapsulate the DTLS-SRTP signaling will also be used to convey HBH key information from the KMF to the MDD, so no additional protocol or interface is required.
+Endpoints will establish DTLS-SRTP associations over the RTP session’s media ports for the purposes of key information exchange with the KMF.  The MDD will not terminate the DTLS signaling and instead forward DTLS packets received from endpoints on to the KMF, and vice versa, via a tunnel established between MDD and the KMF.  This tunnel used to encapsulate the DTLS-SRTP signaling between the KMF and endpoints will also be used to convey HBH key information from the KMF to the MDD, so no additional protocol or interface is required.
 
-Following the key information exchange with the KMF, endpoints will be able to encrypt media end-to-end with their E2E Key(i), sending that E2E Key(i) to other endpoints encrypted with E2E KEK as well as encrypt and authenticate entire packets using local HBH Key(j).  The procedures defined do not allow the MDD to gain access to E2E KEK information, preventing it from gaining access to any endpoint’s E2E Key and decrypting any media in the conference.
+Following the key information exchange with the KMF, endpoints will be able to encrypt media end-to-end with their E2E Key(i), sending that E2E Key(i) to other endpoints encrypted with E2E KEK, and will be able to encrypt and authenticate RTP packets using local HBH Key(j).  The procedures defined do not allow the MDD to gain access to E2E KEK information, preventing it from gaining access to any endpoints’ E2E Key and subsequently decrypting media .
 
 ## Key Exchange during Conference
 
