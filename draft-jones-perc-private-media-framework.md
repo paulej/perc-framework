@@ -120,7 +120,7 @@ Figure: Trusted and Untrusted Entities in PERC
 
 ## Untrusted Entities
 
-The architecture described in this framework document enables conferencing infrastructure to be hosted in domains, such as in a cloud conferencing provider's facilities, where the trustworthiness is below the level needed to assume the privacy of participant's media will not be compromised.  The conferencing infrastructure in such a domain is still trusted with reliably connecting the participants together in a conference, but not trusted with key material needed to decrypyt any of the participant's media.  Entities in such lower trustworthiness domains will simply be referred to as Unstrusted from this point forward.  This does not mean that they are completely untrusted as they may be trusted with most non-media related aspects of hosting a conference. 
+The architecture described in this framework document enables conferencing infrastructure to be hosted in domains, such as in a cloud conferencing provider's facilities, where the trustworthiness is below the level needed to assume the privacy of participant's media will not be compromised.  The conferencing infrastructure in such a domain is still trusted with reliably connecting the participants together in a conference, but not trusted with key material needed to decrypt any of the participant's media.  Entities in such lower trustworthiness domains will simply be referred to as Untrusted from this point forward.  This does not mean that they are completely untrusted as they may be trusted with most non-media related aspects of hosting a conference. 
 
 ### MDD 
 
@@ -130,7 +130,7 @@ An endpoint's ability to join a conference hosted by an MDD **MUST NOT** alone b
 
 An MDD **MUST** perform its role in properly forwarding media packets while taking measures to mitigate the adverse effects of denial of service attacks (Refer to (#attacks)), etc, to a level equal to or better than pre-PERC deployments.
 
-An MDD or associated conferencing infrastructure may also initiate or terminate various conference control related messaging, which is outside the scope of this framework dosument.  
+An MDD or associated conferencing infrastructure may also initiate or terminate various conference control related messaging, which is outside the scope of this framework document.  
 
 ### Call Processing 
 
@@ -146,7 +146,7 @@ From the PERC model system perspective, entities considered trusted (Refer to (#
 
 ### Endpoint
 
-An endpoint is considered trusted and will have access to E2E key information.  While it is possible for an endpoint to be tampered with and become compromised, subsequently performing in undesired ways, defining endpoint resistence to compromise is outside the scope of this document.  Endpoints will take measures to mitigate the adverse effects of denial of service attacks (Refer to (#attacks)) from other entities, including from other endpoints, to a level equal to or better than pre-PERC deployments.
+An endpoint is considered trusted and will have access to E2E key information.  While it is possible for an endpoint to be tampered with and become compromised, subsequently performing in undesired ways, defining endpoint resistance to compromise is outside the scope of this document.  Endpoints will take measures to mitigate the adverse effects of denial of service attacks (Refer to (#attacks)) from other entities, including from other endpoints, to a level equal to or better than pre-PERC deployments.
 
 ### KMF
 
@@ -178,9 +178,9 @@ To enable the above, this framework defines the use of two security contexts and
 +---------+   Key(AX)   +-------+ Key(XY) +-------+   Key(YB)   +---------+
 
 ```
-Figure: E2E and HBH Keys Used for Authenticated Encrytion
+Figure: E2E and HBH Keys Used for Authenticated Encryption
   
-The PERC Double draft specification [@! draft-jennings-perc-double] uses standard SRTP key material and recommended cryptographic transform(s) to first form the inner, end-to-end RTP security association.  That end-to-end RTP security association may be optionally used to encrypt some RTP header extensions along with RTP media content.  The output of this is treated like an RTP packet and encrypted again, with (optionally) standard SRTP key material and recommended cryptographic transform(s), to form the outer hop-by-hop security associations.  The endpoint excutes the entire Double operation while the MDD just performs the outer, hop-by-hop security association operation.  
+The PERC Double draft specification [@!I-D.jennings-perc-double] uses standard SRTP key material and recommended cryptographic transform(s) to first form the inner, end-to-end RTP security association.  That end-to-end RTP security association may be optionally used to encrypt some RTP header extensions along with RTP media content.  The output of this is treated like an RTP packet and encrypted again, with (optionally) standard SRTP key material and recommended cryptographic transform(s), to form the outer hop-by-hop security associations.  The endpoint executes the entire Double operation while the MDD just performs the outer, hop-by-hop security association operation. 
 
 RTCP is only (optionally) encrypted hop-by-hop, not end-to-end, so standard SRTCP Authenticated Encryption operations [@!RFC3711] are used hop-by-hop.
 
@@ -204,7 +204,7 @@ Thus, Endpoints **MUST** maintain a list of SSRCs from received RTP flows and ea
 
 To ensure the integrity of transmitted media packets, this framework requires that every packet be authenticated hop-by-hop (HBH), between an endpoint and an MDD and between MDDs.  The authentication key used for hop-by-hop authentication is derived from an SRTP master key shared only on the respective hop (HBH Key(j); j=(a given hop)). Each HBH Key(j) is distinct per hop and no two hops ever intentionally use the same SRTP master key.
 
-Using hop-by-hop authentication gives the MDD the ability to change certain RTP header values. Which values the MDD may change in the RTP header are defined in [@!I-D.jennings-perc-double].  RTCP is always authenticated and optionally encrypted hop-by-hop using SRTP master key for the hop. This gives the MDD the flexibility of either forwarding RTCP unchanged, transmit compound RTCP packets, or to iniate RTCP packets for reporting statistics or for conveying other information.  Performing hop-by-hop authentication for all RTP and RTCP packets also helps provide replay protection (see (#attacks)). 
+Using hop-by-hop authentication gives the MDD the ability to change certain RTP header values. Which values the MDD may change in the RTP header are defined in [@!I-D.jennings-perc-double].  RTCP is always authenticated and optionally encrypted hop-by-hop using SRTP master key for the hop. This gives the MDD the flexibility of either forwarding RTCP unchanged, transmit compound RTCP packets, or to initiate RTCP packets for reporting statistics or for conveying other information.  Performing hop-by-hop authentication for all RTP and RTCP packets also helps provide replay protection (see (#attacks)). 
 
 If there is a need to encrypt one or more RTP header extensions hop-by-hop, an encryption key is derived from the hop-by-hop SRTP master key to encrypt header extensions as per [@!RFC6904]. This will still give the switching MDD visibility into header extensions, such as the one used to determine audio level [@!RFC6464] of conference participants. Note that when RTP header extensions tare encrypted, all hops - in the untrusted domain at least - will need to decrypt and re-encrypt these encrypted header extensions.
 
@@ -220,7 +220,7 @@ The procedures defined in DTLS Tunnel for PERC [@!I-D.jones-perc-dtls-tunnel] es
 ```
 
          E2E KEK info +---------+ HBH Key info   
-         to endponts  |   KMF   | to endpoints & MDD
+         to endpoints  |   KMF   | to endpoints & MDD
                       +---------+  
                         | ^ ^ | 
                         | | | |-DTLS Tunnel    
@@ -244,18 +244,22 @@ The KEK (i.e., EKT_key) may need to change from time-to-time during the life of 
 
 # Entity Trust
 
-It is important to this solution framework that the entities can full trust and validate the authenticity of other entities, especially the KMF and Endpoints.  This may be satisfied via identity assertions from a trusted provider or via device certificates manually exchanged outside this frameowrk or via device certificate fingerprint information conveyed during session signaling.  [EDIT TO DO:  Cullen, others, perhaps you can add a small amount of elaboration here.]
+It is important to this solution framework that the entities can trust and validate the authenticity of other entities, especially the KMF and Endpoints.  The details of this are outside the scope of specification but a few possibilities are discused in the following sections. The key requirements is that endpoints can verify they are connected to the correct KMF for the conference and the KMF can verify the endpoints are the correct endpoints for the conference. 
+
+Two possible are approaches to solve this are Identity Assertions and Certificate Fingerprints.
 
 ## Identity Assertions
-[EDIT TO DO:  Cullen, others, perhaps you can add a small amount of elaboration here.]
+
+WebRTC (TODO REF) Identity assertion can be used to bind the Identity of the user of the Endpoint to the fingerprint of the DTLS-SRTP certificate used for the call. If this certificate is unique for a given call to a conference. This allows the KMF to ensure that only authorized users participate in the conference. Similarly the KMF can create a WeBRTC Identity assertion bound the  fingerprint of the unique certificate used by the KMF for this conference so that the Endpoint can validate they are talking to the correct KMF. 
+
 
 ## Certificate Fingerprints in Session Signaling
 
-Entities managing session signaling are generally assumed to be untrusted in the PERC framework.  However, there are some deployment scenarios where session signaling may be assumed trustworthy for the purposes of exchanging, in a manner that can be authenticated, the fingerprint of an entity’s certificate.  
+Entities managing session signaling are generally assumed to be untrusted in the PERC framework.  However, there are some deployment scenarios where parts of the session signaling may be assumed trustworthy for the purposes of exchanging, in a manner that can be authenticated, the fingerprint of an entity’s certificate. 
 
-As a concrete example, SIP [@RFC3261] and SDP [@!RFC4566] can be used to convey the fingerprint information per [@!RFC5763].  An endpoint’s SIP User Agent would send an INVITE message containing SDP for the media session along with the endpoint's certificate fingerprint, which **MUST** be cryptographically signed so as to prevent unauthorized modification of the fingerprint value.  For example, the endpoint can send a message to a call processing function (e.g., B2BUA) over a TLS connection.  And the B2BUA might sign the message using the procedures described in [@RFC4474] for the benefit of forwarding the message to other entities.  
+As a concrete example, SIP [@RFC3261] and SDP [@!RFC4566] can be used to convey the fingerprint information per [@!RFC5763].  An endpoint’s SIP User Agent would send an INVITE message containing SDP for the media session along with the endpoint's certificate fingerprint, which can be signed using the procedures described in [@RFC4474] for the benefit of forwarding the message to other entities. Other entities can now verify the fingerprints match the Certificates found in the DTLS-SRTP connections to find the identity of the far end of the DTLS-SRTP connection and check that is the authorized entity. 
 
-Ultimately, if using session signaling, an endpoint's certificate fingerprint would need to be securely convey to the KMF and visa versa, as it will be necessary that KMF's certificate fingerprint be conveyed to endpoints in a manner that can be authenticated.
+Ultimately, if using session signaling, an endpoint's certificate fingerprint would need to be securely mapped to a user and convey to the KMF that can check that user is authorized.  Similarly, as it will be necessary that KMF's certificate fingerprint be conveyed to endpoints in a manner that can be authenticated as being an authorized KMF for this conference. 
 
 # Attacks on Privacy Enhanced RTP Conferencing {#attacks}
 
