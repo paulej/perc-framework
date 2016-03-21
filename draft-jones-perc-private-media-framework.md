@@ -1,8 +1,10 @@
 %%%
+
     #
     # Solution Framework for Private Media
     # Generation tool: mmark (https://github.com/miekg/mmark)
     #
+
     Title = "A Solution Framework for Private Media in Privacy Enhanced RTP Conferencing"
     abbrev = "Private Media Framework"
     category = "std"
@@ -38,6 +40,7 @@
       region = "California"
       code = "95134"
       country = "USA"
+
 %%%
 
 .# Abstract
@@ -70,7 +73,7 @@ Endpoint: An RTP flow terminating entity that has possession of E2E media encryp
 
 MDD (Media Distribution Device): An RTP middlebox that is not allowed to to have access to E2E encryption keys.  It may operate according to any of the RTP topologies [@I-D.ietf-avtcore-rtp-topologies-update] per the constraints defined by the PERC system, which includes, but not limited to, having no access to RTP media unencrypted and having limits on what RTP header field it can alter. 
 
-KMF (Key Management Function): An entity that is a logical function which passes key material and related information to endpoints and MDDs that is appropriate for each.  The KMF might be co-resident with another entity trusted with E2E key material.
+KMF (Key Management Function): An entity that is a logical function which passes keying material and related information to endpoints and MDDs that is appropriate for each.  The KMF might be co-resident with another entity trusted with E2E keying material.
 
 Conference: Two or more participants communicating via trusted endpoints to exchange RTP flows through one or more MDDs.
 
@@ -107,7 +110,7 @@ Figure: Trusted and Untrusted Entities in PERC
 
 ## Untrusted Entities
 
-The architecture described in this framework document enables conferencing infrastructure to be hosted in domains, such as in a cloud conferencing provider's facilities, where the trustworthiness is below the level needed to assume the privacy of participant's media will not be compromised.  The conferencing infrastructure in such a domain is still trusted with reliably connecting the participants together in a conference, but not trusted with key material needed to decrypt any of the participant's media.  Entities in such lower trustworthiness domains will simply be referred to as untrusted entities from this point forward.  This does not mean that they are completely untrusted as they may be trusted with most non-media related aspects of hosting a conference. 
+The architecture described in this framework document enables conferencing infrastructure to be hosted in domains, such as in a cloud conferencing provider's facilities, where the trustworthiness is below the level needed to assume the privacy of participant's media will not be compromised.  The conferencing infrastructure in such a domain is still trusted with reliably connecting the participants together in a conference, but not trusted with keying material needed to decrypt any of the participant's media.  Entities in such lower trustworthiness domains will simply be referred to as untrusted entities from this point forward.  This does not mean that they are completely untrusted as they may be trusted with most non-media related aspects of hosting a conference. 
 
 ### MDD 
 
@@ -165,7 +168,7 @@ To enable all of the above, this framework defines the use of two security conte
 ~~~
 Figure: E2E and HBH Keys Used for Authenticated Encryption
   
-The PERC Double draft specification [@!I-D.jennings-perc-double] uses standard SRTP key material and recommended cryptographic transform(s) to first form the inner, end-to-end SRTP cryptographic context.  That end-to-end SRTP cryptographic context **MAY** be used to encrypt some RTP header extensions along with RTP media content.  The output of this is treated like an RTP packet and encrypted again, with (optionally) standard SRTP key material and recommended cryptographic transform(s), using the outer hop-by-hop cryptographic context.  The endpoint executes the entire Double operation while the MDD just performs the outer, hop-by-hop operation. 
+The PERC Double draft specification [@!I-D.jennings-perc-double] uses standard SRTP keying material and recommended cryptographic transform(s) to first form the inner, end-to-end SRTP cryptographic context.  That end-to-end SRTP cryptographic context **MAY** be used to encrypt some RTP header extensions along with RTP media content.  The output of this is treated like an RTP packet and encrypted again, with (optionally) standard SRTP keying material and recommended cryptographic transform(s), using the outer hop-by-hop cryptographic context.  The endpoint executes the entire Double operation while the MDD just performs the outer, hop-by-hop operation. 
 
 RTCP can only be encrypted hop-by-hop, not end-to-end.  This framework introduces no additional step for RTCP authenticated encryption, so the procedures needed are specified in [@!RFC3711] and use the same outer, hop-by-hop cryptographic context chosen in the Double operation described above.
 
