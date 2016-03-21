@@ -174,7 +174,7 @@ RTCP can only be encrypted hop-by-hop, not end-to-end.  This framework introduce
 
 ## E2E Key Confidentiality
 
-To ensure the confidentiality of E2E keys shared between endpoints, endpoints will make use of a common Key Encryption Key (KEK) that is known only by the trusted entities in a conference.  That KEK, defined in the PERC EKT Diet Draft [@!I-D.draft-jennings-perc-srtp-ekt-diet] as the EKT Key, will be used to subsequently encrypt SRTP master keys used for E2E authenticated encryption (E2E Key(i); i=\{a given endpoint\}) of media sent by a given endpoint.
+To ensure the confidentiality of E2E keys shared between endpoints, endpoints will make use of a common Key Encryption Key (KEK) that is known only by the trusted entities in a conference.  That KEK, defined in the PERC EKT Diet Draft TODO REF \[@!I-D.draft-jennings-perc-srtp-ekt-diet] as the EKT Key, will be used to subsequently encrypt SRTP master keys used for E2E authenticated encryption (E2E Key(i); i=\{a given endpoint\}) of media sent by a given endpoint.
 
 {#fig-who-has-what-key align="center"}
 ~~~
@@ -209,7 +209,7 @@ If there is a need to encrypt one or more RTP header extensions hop-by-hop, an e
 
 ## Key Exchange
 
-To facilitate key exchange required to establish or generate an E2E key and a HBH key for an endpoint and the same HBH key for the MDD, this framework utilizes a DTLS-SRTP [@!RFC5764] association between an endpoint and the KMF.  To establish this association, an endpoint will send DTLS-SRTP messages to the MDD which will then forward them to the MDD as defined in DTLS Tunnel for PERC [@!I-D.jones-perc-dtls-tunnel].  The KEK (i.e., EKT Key) is also conveyed by the KMF over the DTLS association to endpoints via procedures defined in PERC EKT [I-D.draft-jennings-perc-srtp-ekt-diet].
+To facilitate key exchange required to establish or generate an E2E key and a HBH key for an endpoint and the same HBH key for the MDD, this framework utilizes a DTLS-SRTP [@!RFC5764] association between an endpoint and the KMF.  To establish this association, an endpoint will send DTLS-SRTP messages to the MDD which will then forward them to the MDD as defined in DTLS Tunnel for PERC [@!I-D.jones-perc-dtls-tunnel].  The KEK (i.e., EKT Key) is also conveyed by the KMF over the DTLS association to endpoints via procedures defined in PERC EKT (TODO REF \[I-D.draft-jennings-perc-srtp-ekt-diet]).
 
 MDDs use DTLS-SRTP [@!RFC5764] directly with a peer MDD to establish HBH keys for transmitting RTP and RTCP packets that peer MDD.  The KMF does not facilitate establishing HBH keys for use between MDDs.
 
@@ -243,7 +243,7 @@ Following the initial key information exchange with the KMF, endpoints will be a
 
 The KEK (i.e., EKT Key) may need to change from time-to-time during the life of a conference, such as when a new participant joins or leaves a conference.  Dictating if, when or how often a conference is to be re-keyed is outside the scope of this document, but this framework does accommodate re-keying during the life of a conference.  
 
-When a KMF decides to rekey a conference, it transmits a specific message defined in PERC EKT [I-D.draft-jennings-perc-srtp-ekt-diet] to each of the conference participants.  The endpoint **MUST** create a new SRTP master key and prepare to send that key inside a Full EKT Field using the new EKT Key. Since it may take some time for all of the endpoints in conference to finish re-keying, senders **SHOULD** delay a short period of time before sending media encrypted with the new master key, but it **MUST** be prepared to make use of the information from a new EKT Key immediately. [TO DO: Either need to pick a short delay period for endpoints to use per above, defer to a future best practices document or consider having the KMF manage the delay period given it knows the size of a given conference.]
+When a KMF decides to rekey a conference, it transmits a specific message defined in PERC EKT (TODO REF) \[I-D.draft-jennings-perc-srtp-ekt-diet] to each of the conference participants.  The endpoint **MUST** create a new SRTP master key and prepare to send that key inside a Full EKT Field using the new EKT Key. Since it may take some time for all of the endpoints in conference to finish re-keying, senders **SHOULD** delay a short period of time before sending media encrypted with the new master key, but it **MUST** be prepared to make use of the information from a new EKT Key immediately. [TO DO: Either need to pick a short delay period for endpoints to use per above, defer to a future best practices document or consider having the KMF manage the delay period given it knows the size of a given conference.]
 
 # Entity Trust
 
