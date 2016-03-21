@@ -148,7 +148,7 @@ Obviously, the KMF needs to be closely managed to prevent exploitation by an adv
 
 # Framework for PERC 
 
-The purpose for this framework is to define a means through which media privacy can be ensured when communicating within a conferencing environment consisting of one or more centrally located [PEJ: should we remove "centrally located"?] MDDs that only switch, hence not terminate, media.  It does not otherwise attempt to hide the fact that a conference between endpoints is taking place.
+The purpose for this framework is to define a means through which media privacy can be ensured when communicating within a conferencing environment consisting of one or more MDDs that only switch, hence not terminate, media.  It does not otherwise attempt to hide the fact that a conference between endpoints is taking place.
 
 This framework reuses several specified RTP security technologies, including SRTP [@!RFC3711], EKT [@!I-D.ietf-avtcore-srtp-ekt], and DTLS-SRTP [@!RFC5764].  
 
