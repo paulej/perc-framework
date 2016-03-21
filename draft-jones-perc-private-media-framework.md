@@ -118,7 +118,7 @@ An MDD forwards RTP flows between endpoints in the conference while performing p
 
 An endpoint's ability to join a conference hosted by an MDD **MUST NOT** alone be interpreted as being authorized to have access to the E2E media encryption keys, as the MDD does not have the ability to determine whether an endpoint is authorized.
 
-An MDD **MUST** perform its role in properly forwarding media packets while taking measures to mitigate the adverse effects of denial of service attacks (refer to Section (#attacks)), etc, to a level equal to or better than traditional conferencing (e.g. pre-PERC) deployments.
+An MDD **MUST** perform its role in properly forwarding media packets while taking measures to mitigate the adverse effects of denial of service attacks (refer to Section (#attacks)), etc, to a level equal to or better than traditional conferencing (i.e. pre-PERC) deployments.
 
 An MDD or associated conferencing infrastructure may also initiate or terminate various conference control related messaging, which is outside the scope of this framework document.
 
@@ -142,7 +142,7 @@ An endpoint is considered trusted and will have access to E2E key information.  
 
 The KMF, which may be collocated with an endpoint or exist standalone, is responsible for providing key information to endpoints for both end-to-end and hop-by-hop security and for providing key information to MDDs for the hop-by-hop security.
 
-Interaction between the KMF and the call processing function may be necessary to for proper conference-to-endpoint correlations, which may or may not be satisfied by getting information directly from the endpoints or via some other means. [TO DO: Revisit this text after design choice(s) are made between the alternatives.]
+Interaction between the KMF and the call processing function may be necessary to for proper conference-to-endpoint mappings, which may or may not be satisfied by getting information directly from the endpoints or via some other means. [TO DO: Revisit this text after design choice(s) are made between the alternatives.]
 
 Obviously, the KMF needs to be closely managed to prevent exploitation by an adversary, as any kind of security compromise of the KMF puts the security of the conference at risk.
 
