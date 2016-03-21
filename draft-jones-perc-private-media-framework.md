@@ -168,7 +168,7 @@ To enable all of the above, this framework defines the use of two security conte
 ~~~
 Figure: E2E and HBH Keys Used for Authenticated Encryption
 
-The PERC Double draft specification [@!I-D.jennings-perc-double] uses standard SRTP keying material and recommended cryptographic transform(s) to first form the inner, end-to-end SRTP cryptographic context.  That end-to-end SRTP cryptographic context **MAY** be used to encrypt some RTP header extensions along with RTP media content.  The output of this is treated like an RTP packet and encrypted again, with (optionally) standard SRTP keying material and recommended cryptographic transform(s), using the outer hop-by-hop cryptographic context.  The endpoint executes the entire Double operation while the MDD just performs the outer, hop-by-hop operation.
+The PERC Double draft specification [@!I-D.jennings-perc-double] uses standard SRTP keying material and recommended cryptographic transform(s) to first form the inner, end-to-end SRTP cryptographic context.  That end-to-end SRTP cryptographic context **MAY** be used to encrypt some RTP header extensions along with RTP media content.  The output of this is treated like an RTP packet and encrypted again using the outer hop-by-hop cryptographic context.  The endpoint executes the entire Double operation while the MDD just performs the outer, hop-by-hop operation.
 
 RTCP can only be encrypted hop-by-hop, not end-to-end.  This framework introduces no additional step for RTCP authenticated encryption, so the procedures needed are specified in [@!RFC3711] and use the same outer, hop-by-hop cryptographic context chosen in the Double operation described above.
 
