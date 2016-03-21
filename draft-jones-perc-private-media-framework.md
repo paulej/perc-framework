@@ -66,7 +66,7 @@ E2E (End-to-End): Communications from one endpoint through one or more MDDs to t
 
 HBH (Hop-by-Hop): Communications between an endpoint and an MDD or between MDDs.
 
-Endpoint: An RTP flow terminating entity that also terminates the end-to-end (E2E) security context [PEJ: I would suggest we not say the endpoint terminates a security context. We could say "has possession of the media encryption keys used for E2E encryption].  This may include embedded user conferencing equipment or browsers on computers, media gateways, MCUs, media recording device and more that are in the trusted domain for a given deployment.
+Endpoint: An RTP flow terminating entity that has possession of E2E media encryption keys and terminates end-to-end (E2E) encryption.  This may include embedded user conferencing equipment or browsers on computers, media gateways, MCUs, media recording device and more that are in the trusted domain for a given deployment.
 
 MDD (Media Distribution Device): An RTP middlebox that is not allowed to to have access to E2E encryption keys.  It may operate according to any of the RTP topologies [@I-D.ietf-avtcore-rtp-topologies-update] per the constraints defined by the PERC system, which includes, but not limited to, having no access to RTP media unencrypted and having limits on what RTP header field it can alter. 
 
