@@ -288,7 +288,7 @@ Internet-Draft           Private Media Framework              March 2016
    An MDD MUST perform its role in properly forwarding media packets
    while taking measures to mitigate the adverse effects of denial of
    service attacks (refer to Section Section 6), etc, to a level equal
-   to or better than traditional conferencing (e.g. pre-PERC)
+   to or better than traditional conferencing (i.e. pre-PERC)
    deployments.
 
    An MDD or associated conferencing infrastructure may also initiate or
@@ -346,8 +346,8 @@ Internet-Draft           Private Media Framework              March 2016
    information to MDDs for the hop-by-hop security.
 
    Interaction between the KMF and the call processing function may be
-   necessary to for proper conference-to-endpoint correlations, which
-   may or may not be satisfied by getting information directly from the
+   necessary to for proper conference-to-endpoint mappings, which may or
+   may not be satisfied by getting information directly from the
    endpoints or via some other means.  [TO DO: Revisit this text after
    design choice(s) are made between the alternatives.]
 
@@ -863,8 +863,8 @@ Internet-Draft           Private Media Framework              March 2016
 
    [I-D.jennings-perc-double]
               Jennings, C., Jones, P., and A. Roach, "SRTP Double
-              Encryption Procedures", draft-jennings-perc-double-00
-              (work in progress), October 2015.
+              Encryption Procedures", draft-jennings-perc-double-01
+              (work in progress), March 2016.
 
    [I-D.jennings-perc-srtp-ekt-diet]
               Mattsson, J., McGrew, D., Wing, D., Andreasen, F., and C.
@@ -874,8 +874,8 @@ Internet-Draft           Private Media Framework              March 2016
    [I-D.jones-perc-dtls-tunnel]
               Jones, P., "DTLS Tunnel between Media Distribution Device
               and Key Management Function to Facilitate Key Exchange",
-              draft-jones-perc-dtls-tunnel-01 (work in progress),
-              February 2016.
+              draft-jones-perc-dtls-tunnel-02 (work in progress),
+              March 2016.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, DOI 10.17487/
