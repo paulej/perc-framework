@@ -118,7 +118,7 @@ An MDD forwards RTP flows between endpoints in the conference while performing p
 
 An endpoint's ability to join a conference hosted by an MDD **MUST NOT** alone be interpreted as being authorized to have access to the E2E media encryption keys, as the MDD does not have the ability to determine whether an endpoint is authorized.
 
-An MDD **MUST** perform its role in properly forwarding media packets while taking measures to mitigate the adverse effects of denial of service attacks (refer to Section (#attacks)), etc, to a level equal to or better than pre-PERC [PEJ: legacy or "traditional conferencing"; we use "traditional" above] deployments.
+An MDD **MUST** perform its role in properly forwarding media packets while taking measures to mitigate the adverse effects of denial of service attacks (refer to Section (#attacks)), etc, to a level equal to or better than traditional conferencing (e.g. pre-PERC) deployments.
 
 An MDD or associated conferencing infrastructure may also initiate or terminate various conference control related messaging, which is outside the scope of this framework document.  
 
