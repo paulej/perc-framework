@@ -171,7 +171,7 @@ RTCP can only be encrypted hop-by-hop, not end-to-end.  This framework introduce
 
 ## E2E Key Confidentiality
 
-To ensure the confidentiality of E2E keys shared between endpoints, endpoints will make use of a common Key Encryption Key (KEK) that is known only the trusted entities in a conference.  That KEK, defined in the PERC EKT Diet Draft [@!I-D.draft-jennings-perc-srtp-ekt-diet] as the EKT Key, will be used to subsequently encrypt SRTP master keys used for E2E authenticated encryption (E2E Key(i); i=\{a given endpoint\}) of media sent by a given endpoint.
+To ensure the confidentiality of E2E keys shared between endpoints, endpoints will make use of a common Key Encryption Key (KEK) that is known only by the trusted entities in a conference.  That KEK, defined in the PERC EKT Diet Draft [@!I-D.draft-jennings-perc-srtp-ekt-diet] as the EKT Key, will be used to subsequently encrypt SRTP master keys used for E2E authenticated encryption (E2E Key(i); i=\{a given endpoint\}) of media sent by a given endpoint.
 
 {#fig-who-has-what-key align="center"}
 ~~~
