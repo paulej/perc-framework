@@ -62,7 +62,7 @@ The key words "**MUST**", "**MUST NOT**", "**REQUIRED**", "**SHALL**", "**SHALL 
 
 Additionally, this solution framework uses the following conventions, terms and acronyms:
 
-E2E End-to-End): Communications from one endpoint through one or more MDDs to the endpoint at the other end.
+E2E (End-to-End): Communications from one endpoint through one or more MDDs to the endpoint at the other end.
 
 HBH (Hop-by-Hop): Communications between an endpoint and an MDD or between MDDs.
 
@@ -272,7 +272,7 @@ On-path attacks are mitigated by HBH integrity protection and encryption.  The i
 
 Off-path attackers may try connecting to different PERC entities and send specifically crafted packets.  A successful attacker might be able to get the MDD to forward such packets.  If not making use of HBH authentication on the MDD, such an attack could only be detected in the receiving endpoints where the forged packets would finally be dropped.  
 
-Another potential attack is a third party claiming to be an MDD, fooling endpoints in to sending packets to the false MDD instead of the correct one.  The deceived sending endpoints could incorrectly assuming their packets have been delivered to endpoints when they in fact have not.  Further, the false MDD may cascade to another legitimate MDD creating a false version of the real conference.  This attack is mitigated since false MDD would not be authenicated by the KMF and be able tunnel the DTLS-SRTP signaling to/from the KMF.  Since it cannot tunnel the DTLS-SRTP signaling, endpoints will not get the KEK and the conference will not go on.  [TO DO: How much to cover regarding the exchange valid MDD certficates with the KMF in this doc?]
+Another potential attack is a third party claiming to be an MDD, fooling endpoints in to sending packets to the false MDD instead of the correct one.  The deceived sending endpoints could incorrectly assuming their packets have been delivered to endpoints when they in fact have not.  Further, the false MDD may cascade to another legitimate MDD creating a false version of the real conference.  This attack is mitigated since false MDD would not be authenicated by the KMF and be able tunnel the DTLS-SRTP signaling to/from the KMF.  Since it cannot tunnel the DTLS-SRTP signaling, endpoints will not get the KEK and the conference will not go on.  [TO DO: Include the exchange valid MDD certficates with the KMF in this doc or not?]
 
 ##   MDD Attacks
 
@@ -310,9 +310,9 @@ The splicing attack is an attack where an MDD receiving multiple media sources s
 
 - Endpoints and KMF must securely convey their respective certificate information directly or indirectly via some other means or identity service provider.
 
-- If as in "Double" draft, the ROC value is no longer in the clear and associated with the "outer" protection scheme, we may need to require that the MDD maintain a separate ROC value for each SSRC sent to each separate endpoint.  This ROC value should start at 0 regardless of the sequence number in that first packet sent to an endpoint.  [EDIT : Do we document this in the framework or in double?)
+- If as in "Double" draft, the ROC value is no longer in the clear and associated with the "outer" protection scheme, we may need to require that the MDD maintain a separate ROC value for each SSRC sent to each separate endpoint.  This ROC value should start at 0 regardless of the sequence number in that first packet sent to an endpoint.  [EDIT : Do we document this in this framework or in Double draft?]
 
-- Investigate adding ability to enable the transmission of one-way media from a non-trusted device (e.g., announcements). One possible solution is to have the KMF send an "ekt_key" message that is explicitly labeled for receive-only and giving that to announcement servers.  As opposed to modifying the EKT spec for this PERC-specific need, we could say in the framework that EKT Keys with a SPI > 32000, say, are intended for this purpose and trusted endpoints should only use those EKT Keys to decrypt Full EKT Fields received from such transmitters.  Thus, trusted endpoints would never send media with EKT Keys having those SPI values.)
+- Investigate adding ability to enable the transmission of one-way media from a non-trusted device (e.g., announcements). One possible solution is to have the KMF send an "ekt_key" message that is explicitly labeled for receive-only and giving that to announcement servers.  As opposed to modifying the EKT spec for this PERC-specific need, we could say in the framework that EKT Keys with a SPI > 32000, say, are intended for this purpose and trusted endpoints should only use those EKT Keys to decrypt Full EKT Fields received from such transmitters.  Thus, trusted endpoints would never send media with EKT Keys having those SPI values.
 
 # IANA Considerations
 
